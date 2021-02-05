@@ -1,4 +1,8 @@
 library(panelPomp)
+names = c("all","just_b","just_f","no_int","just_diff","gdp_only")
+job = list()
+job2 = list()
+mifs_pomp = list()
 name = "all"
 PARAM = c("a","b","c","d","e","f","z","sigma","sigma_obs","N_0")
 rwsd = rw.sd(a=.2,z = .2,sigma=.1,sigma_obs = .1,N_0=ivp(.1),d = .1,c=.1,b=.1,e=.1,f=.1)
@@ -79,7 +83,7 @@ Model_diff = panelPomp(Pomps,shared = p)
 lower = c(a = 0.2,sigma=0.5,N_0 = 0,sigma_obs=0.2,z = 1.1,d = -0.6,b = -0.5,c =-1,e=-0.3,f=-0.3)
 upper = c(a = 0.6,sigma=1, N_0 = 0,sigma_obs=0.6,z = 1.3,d = 1,b = 0.5,c = 0,e=-0.3,f=-0.3)
 
-sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 180) -> guesses
+sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 48) -> guesses
 
 
 Model_diff %>%
@@ -99,19 +103,19 @@ pkg = c("panelPomp")
 options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
-mifs_pomp = get_slurm_out(job,wait = TRUE)
+mifs_pomp = get_slurm_out(job[[name]],wait = TRUE)
 
-d = data.frame(i = 1:length(mifs_pomp))
-job2 = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs_pomp"))
-estimates = get_slurm_out(job2, outtype = "table")
-file1 = paste("~/mifs_pomp_",name,sep="")
-file1 = paste(file1, ".RDS",sep="")
-file2 = paste("~/estimates_",name,sep="")
-file2 = paste(file2, ".csv",sep="")
-saveRDS(mifs_pomp,file1)
-write.csv(estimates,file2)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -162,7 +166,7 @@ Model_diff = panelPomp(Pomps,shared = p)
 lower = c(a = 0.2,sigma=0.5,N_0 = 0,sigma_obs=0.2,z = 1.1,d = -0.6,b = -0.5,c =-1,e=-0.3,f=-0.3)
 upper = c(a = 0.6,sigma=1, N_0 = 0,sigma_obs=0.6,z = 1.3,d = 1,b = 0.5,c = 0,e=-0.3,f=-0.3)
 
-sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 180) -> guesses
+sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 48) -> guesses
 
 
 Model_diff %>%
@@ -178,30 +182,11 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-pkg = c("panelPomp")
+
 options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
-
-mifs_pomp = get_slurm_out(job,wait = TRUE)
-
-d = data.frame(i = 1:length(mifs_pomp))
-job2 = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs_pomp"))
-estimates = get_slurm_out(job2, outtype = "table")
-file1 = paste("~/mifs_pomp_",name,sep="")
-file1 = paste(file1, ".RDS",sep="")
-file2 = paste("~/estimates_",name,sep="")
-file2 = paste(file2, ".csv",sep="")
-saveRDS(mifs_pomp,file1)
-write.csv(estimates,file2)
-
-
-
-
-
-
-
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 name = "just_f"
 PARAM = c("a","c","f","z","sigma","sigma_obs","N_0")
@@ -248,7 +233,7 @@ Model_diff = panelPomp(Pomps,shared = p)
 lower = c(a = 0.2,sigma=0.5,N_0 = 0,sigma_obs=0.2,z = 1.1,d = -0.6,b = -0.5,c =-1,e=-0.3,f=-0.3)
 upper = c(a = 0.6,sigma=1, N_0 = 0,sigma_obs=0.6,z = 1.3,d = 1,b = 0.5,c = 0,e=-0.3,f=-0.3)
 
-sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 180) -> guesses
+sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 48) -> guesses
 
 
 Model_diff %>%
@@ -264,23 +249,12 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-pkg = c("panelPomp")
+48c("panelPomp")
 options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
-mifs_pomp = get_slurm_out(job,wait = TRUE)
-
-d = data.frame(i = 1:length(mifs_pomp))
-job2 = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs_pomp"))
-estimates = get_slurm_out(job2, outtype = "table")
-file1 = paste("~/mifs_pomp_",name,sep="")
-file1 = paste(file1, ".RDS",sep="")
-file2 = paste("~/estimates_",name,sep="")
-file2 = paste(file2, ".csv",sep="")
-saveRDS(mifs_pomp,file1)
-write.csv(estimates,file2)
 
 name = "no_int"
 PARAM = c("a","c","d","e","z","sigma","sigma_obs","N_0")
@@ -327,7 +301,7 @@ Model_diff = panelPomp(Pomps,shared = p)
 lower = c(a = 0.2,sigma=0.5,N_0 = 0,sigma_obs=0.2,z = 1.1,d = -0.6,b = -0.5,c =-1,e=-0.3,f=-0.3)
 upper = c(a = 0.6,sigma=1, N_0 = 0,sigma_obs=0.6,z = 1.3,d = 1,b = 0.5,c = 0,e=-0.3,f=-0.3)
 
-sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 180) -> guesses
+sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 48) -> guesses
 
 
 Model_diff %>%
@@ -343,23 +317,12 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-pkg = c("panelPomp")
+48c("panelPomp")
 options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
-mifs_pomp = get_slurm_out(job,wait = TRUE)
-
-d = data.frame(i = 1:length(mifs_pomp))
-job2 = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs_pomp"))
-estimates = get_slurm_out(job2, outtype = "table")
-file1 = paste("~/mifs_pomp_",name,sep="")
-file1 = paste(file1, ".RDS",sep="")
-file2 = paste("~/estimates_",name,sep="")
-file2 = paste(file2, ".csv",sep="")
-saveRDS(mifs_pomp,file1)
-write.csv(estimates,file2)
 
 
 name = "just_diff"
@@ -407,7 +370,7 @@ Model_diff = panelPomp(Pomps,shared = p)
 lower = c(a = 0.2,sigma=0.5,N_0 = 0,sigma_obs=0.2,z = 1.1,d = -0.6,b = -0.5,c =-1,e=-0.3,f=-0.3)
 upper = c(a = 0.6,sigma=1, N_0 = 0,sigma_obs=0.6,z = 1.3,d = 1,b = 0.5,c = 0,e=-0.3,f=-0.3)
 
-sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 180) -> guesses
+sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 48) -> guesses
 
 
 Model_diff %>%
@@ -423,23 +386,23 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-pkg = c("panelPomp")
+48c("panelPomp")
 options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
-mifs_pomp = get_slurm_out(job,wait = TRUE)
 
-d = data.frame(i = 1:length(mifs_pomp))
-job2 = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs_pomp"))
-estimates = get_slurm_out(job2, outtype = "table")
-file1 = paste("~/mifs_pomp_",name,sep="")
-file1 = paste(file1, ".RDS",sep="")
-file2 = paste("~/estimates_",name,sep="")
-file2 = paste(file2, ".csv",sep="")
-saveRDS(mifs_pomp,file1)
-write.csv(estimates,file2)
+
+
+
+
+
+
+
+
+
+
 
 
 name = "gdp_only"
@@ -487,7 +450,7 @@ Model_diff = panelPomp(Pomps,shared = p)
 lower = c(a = 0.2,sigma=0.5,N_0 = 0,sigma_obs=0.2,z = 1.1,d = -0.6,b = -0.5,c =-1,e=-0.3,f=-0.3)
 upper = c(a = 0.6,sigma=1, N_0 = 0,sigma_obs=0.6,z = 1.3,d = 1,b = 0.5,c = 0,e=-0.3,f=-0.3)
 
-sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 180) -> guesses
+sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 48) -> guesses
 
 
 Model_diff %>%
@@ -508,22 +471,35 @@ data$iteration = as.numeric(row.names(mf1@pconv.rec))
 data = gather(data,"key","value",-iteration)
 ggplot(data,aes(iteration,value)) + geom_line()+ facet_wrap(vars(key),scales = "free")
 
-pkg = c("panelPomp")
-options =  list("firstgen","benoit2c@gmail.com","ALL")
+48c("panelPomp")
+options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
-mifs_pomp = get_slurm_out(job,wait = TRUE)
+for(name in names){
+  mifs_pomp[[name]] = get_slurm_out(job,wait = TRUE)
+  file1 = paste("~/mifs_pomp_",name,sep="")
+  file1 = paste(file1, ".RDS",sep="")
+  saveRDS(mifs_pomp[[name]],file1)
+}
 
-d = data.frame(i = 1:length(mifs_pomp))
-job2 = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs_pomp"))
-estimates = get_slurm_out(job2, outtype = "table")
-file1 = paste("~/mifs_pomp_",name,sep="")
-file1 = paste(file1, ".RDS",sep="")
-file2 = paste("~/estimates_",name,sep="")
-file2 = paste(file2, ".csv",sep="")
-saveRDS(mifs_pomp,file1)
-write.csv(estimates,file2)
+for(name in names[1:5]){
+  mifs = mifs_pomp[[name]]
+  d = data.frame(i = 1:length(mifs))
+  job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
+}
 
+name = "gdp_only"
+mifs = mifs_pomp[[name]]
+d = data.frame(i = 1:length(mifs))
+job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
+options =  list("secondgen","benoit2c@gmail.com","ALL")
+names(options) = c("partition","mail-user","mail-type")
 
+for(name in names){
+  estimates = get_slurm_out(job2[[name]], outtype = "table",wait=TRUE)
+  file2 = paste("~/estimates_",name,sep="")
+  file2 = paste(file2, ".csv",sep="")
+  write.csv(estimates,file2)
+}
