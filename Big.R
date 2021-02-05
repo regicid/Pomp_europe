@@ -465,10 +465,10 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-data = data.frame(mf1@pconv.rec)
-data$iteration = as.numeric(row.names(mf1@pconv.rec))
-data = gather(data,"key","value",-iteration)
-ggplot(data,aes(iteration,value)) + geom_line()+ facet_wrap(vars(key),scales = "free")
+#data = data.frame(mf1@pconv.rec)
+#data$iteration = as.numeric(row.names(mf1@pconv.rec))
+#data = gather(data,"key","value",-iteration)
+#ggplot(data,aes(iteration,value)) + geom_line()+ facet_wrap(vars(key),scales = "free")
 
 
 options =  list("secondgen","benoit2c@gmail.com","ALL")
