@@ -249,7 +249,6 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-48c("panelPomp")
 options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
@@ -317,7 +316,7 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-48c("panelPomp")
+
 options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
@@ -386,7 +385,7 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-48c("panelPomp")
+
 options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
@@ -471,7 +470,7 @@ data$iteration = as.numeric(row.names(mf1@pconv.rec))
 data = gather(data,"key","value",-iteration)
 ggplot(data,aes(iteration,value)) + geom_line()+ facet_wrap(vars(key),scales = "free")
 
-48c("panelPomp")
+
 options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
