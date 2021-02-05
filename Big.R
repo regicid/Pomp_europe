@@ -105,7 +105,7 @@ names(options) = c("partition","mail-user","mail-type")
 
 job[[name]] = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
-mifs_pomp = get_slurm_out(job[[name]],wait = TRUE)
+
 
 
 
@@ -474,7 +474,7 @@ param = coef(mf1)
 options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 for(name in names){
   mifs_pomp[[name]] = get_slurm_out(job,wait = TRUE)
