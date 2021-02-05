@@ -477,7 +477,7 @@ names(options) = c("partition","mail-user","mail-type")
 job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 for(name in names){
-  mifs_pomp[[name]] = get_slurm_out(job,wait = TRUE)
+  mifs_pomp[[name]] = get_slurm_out(job[[name]],wait = TRUE)
   file1 = paste("~/mifs_pomp_",name,sep="")
   file1 = paste(file1, ".RDS",sep="")
   saveRDS(mifs_pomp[[name]],file1)
