@@ -10,7 +10,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
-  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 7500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f), specific = Model_diff@specific)
   
   return(k)
 }
@@ -106,21 +106,6 @@ names(options) = c("partition","mail-user","mail-type")
 job[[name]] = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 name = "just_b"
 PARAM = c("a","b","c","z","sigma","sigma_obs","N_0")
 rwsd = rw.sd(a=.2,z = .2,sigma=.1,sigma_obs = .1,N_0=ivp(.1),c=.1,b=.1)
@@ -128,7 +113,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + a*gdp + pow(b,2)*gdp*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c,b){
-  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,b=b,c=c), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 7500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,b=b,c=c), specific = Model_diff@specific)
   
   return(k)
 }
@@ -195,7 +180,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N  + pow(f,2)*gdp*cum + a*gdp + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c,f){
-  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c,f=f), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 7500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c,f=f), specific = Model_diff@specific)
   
   return(k)
 }
@@ -262,7 +247,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum + a*gdp  + pow(d,2)*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,e){
-  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 7500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
   
   return(k)
 }
@@ -331,7 +316,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum  + pow(d,2)*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(sigma,N_0,sigma_obs,z,d,c,e){
-  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 7500,shared = c(sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
   
   return(k)
 }
@@ -411,7 +396,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + a*gdp + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c){
-  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 7500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c), specific = Model_diff@specific)
   
   return(k)
 }
@@ -456,7 +441,7 @@ Model_diff %>%
   panelPomp::mif2(
     shared.start=unlist(guesses[6,]),
     specific.start = Model_diff@specific,
-    Np=1000,
+    Np=5000,
     Nmif=100,
     cooling.fraction.50=0.95,
     cooling.type="geometric",
