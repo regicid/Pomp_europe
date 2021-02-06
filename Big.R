@@ -44,8 +44,8 @@ Csnippet("
          lik = dnorm(Nobs,N,pow(sigma_obs,2),give_log);
          ") -> dmeas
 eval = function(i){
-  mf = mifs_pomp[[i]]
-  replicate(1000, mf %>% panelPomp::pfilter(Np = 10000) %>% panelPomp::logLik()) %>% logmeanexp(se=TRUE) -> ll
+  mf = mifs[[i]]
+  replicate(5000, mf %>% panelPomp::pfilter(Np = 20000) %>% panelPomp::logLik()) %>% logmeanexp(se=TRUE) -> ll
   return(c(coef(mf),loglik=ll[1],loglik.se=ll[2]))
 }
 
@@ -478,7 +478,7 @@ job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",se
 
 for(name in names){
   mifs_pomp[[name]] = get_slurm_out(job[[name]],wait = TRUE)
-  file1 = paste("~/mifs_pomp_",name,sep="")
+  file1 = paste("mifs_pomp_",name,sep="")
   file1 = paste(file1, ".RDS",sep="")
   saveRDS(mifs_pomp[[name]],file1)
 }
@@ -498,7 +498,7 @@ names(options) = c("partition","mail-user","mail-type")
 
 for(name in names){
   estimates = get_slurm_out(job2[[name]], outtype = "table",wait=TRUE)
-  file2 = paste("~/estimates_",name,sep="")
+  file2 = paste("estimates_",name,sep="")
   file2 = paste(file2, ".csv",sep="")
   write.csv(estimates,file2)
 }
