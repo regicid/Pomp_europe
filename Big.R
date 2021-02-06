@@ -10,7 +10,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
-  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f), specific = Model_diff@specific)
   
   return(k)
 }
@@ -92,7 +92,7 @@ Model_diff %>%
     specific.start = Model_diff@specific,
     Np=5000,
     Nmif=3,
-    cooling.fraction.50=0.9,
+    cooling.fraction.50=0.95,
     cooling.type="geometric",
     rw.sd= rwsd,
     pars = PARAM
@@ -128,7 +128,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + a*gdp + pow(b,2)*gdp*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c,b){
-  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,b=b,c=c), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,b=b,c=c), specific = Model_diff@specific)
   
   return(k)
 }
@@ -175,7 +175,7 @@ Model_diff %>%
     specific.start = Model_diff@specific,
     Np=5000,
     Nmif=3,
-    cooling.fraction.50=0.9,
+    cooling.fraction.50=0.95,
     cooling.type="geometric",
     rw.sd= rwsd,
     pars = PARAM
@@ -195,7 +195,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N  + pow(f,2)*gdp*cum + a*gdp + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c,f){
-  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c,f=f), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c,f=f), specific = Model_diff@specific)
   
   return(k)
 }
@@ -242,7 +242,7 @@ Model_diff %>%
     specific.start = Model_diff@specific,
     Np=5000,
     Nmif=3,
-    cooling.fraction.50=0.9,
+    cooling.fraction.50=0.95,
     cooling.type="geometric",
     rw.sd= rwsd,
     pars = PARAM
@@ -262,7 +262,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum + a*gdp  + pow(d,2)*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,e){
-  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
   
   return(k)
 }
@@ -309,7 +309,7 @@ Model_diff %>%
     specific.start = Model_diff@specific,
     Np=5000,
     Nmif=3,
-    cooling.fraction.50=0.9,
+    cooling.fraction.50=0.95,
     cooling.type="geometric",
     rw.sd= rwsd,
     pars = PARAM
@@ -331,7 +331,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum  + pow(d,2)*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(sigma,N_0,sigma_obs,z,d,c,e){
-  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
   
   return(k)
 }
@@ -378,7 +378,7 @@ Model_diff %>%
     specific.start = Model_diff@specific,
     Np=5000,
     Nmif=3,
-    cooling.fraction.50=0.9,
+    cooling.fraction.50=0.95,
     cooling.type="geometric",
     rw.sd= rwsd,
     pars = PARAM
@@ -411,7 +411,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + a*gdp + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c){
-  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 10000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c), specific = Model_diff@specific)
   
   return(k)
 }
@@ -458,7 +458,7 @@ Model_diff %>%
     specific.start = Model_diff@specific,
     Np=1000,
     Nmif=100,
-    cooling.fraction.50=0.9,
+    cooling.fraction.50=0.95,
     cooling.type="geometric",
     rw.sd= rwsd,
     pars = PARAM
