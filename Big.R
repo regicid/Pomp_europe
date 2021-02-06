@@ -10,7 +10,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
-  k = panelPomp::mif2(mf1,Nmif = 2500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f), specific = Model_diff@specific)
   
   return(k)
 }
@@ -100,10 +100,10 @@ Model_diff %>%
 param = coef(mf1)
 
 pkg = c("panelPomp")
-options =  list("firstgen","benoit2c@gmail.com","ALL")
+options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job[[name]] = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 
 
@@ -128,7 +128,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + a*gdp + pow(b,2)*gdp*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c,b){
-  k = panelPomp::mif2(mf1,Nmif = 2500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,b=b,c=c), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,b=b,c=c), specific = Model_diff@specific)
   
   return(k)
 }
@@ -183,10 +183,10 @@ Model_diff %>%
 param = coef(mf1)
 
 
-options =  list("firstgen","benoit2c@gmail.com","ALL")
+options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 name = "just_f"
 PARAM = c("a","c","f","z","sigma","sigma_obs","N_0")
@@ -195,7 +195,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N  + pow(f,2)*gdp*cum + a*gdp + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c,f){
-  k = panelPomp::mif2(mf1,Nmif = 2500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c,f=f), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c,f=f), specific = Model_diff@specific)
   
   return(k)
 }
@@ -249,10 +249,10 @@ Model_diff %>%
   ) -> mf1
 param = coef(mf1)
 
-options =  list("firstgen","benoit2c@gmail.com","ALL")
+options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 
 name = "no_int"
@@ -262,7 +262,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum + a*gdp  + pow(d,2)*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,e){
-  k = panelPomp::mif2(mf1,Nmif = 2500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
   
   return(k)
 }
@@ -317,10 +317,10 @@ Model_diff %>%
 param = coef(mf1)
 
 
-options =  list("firstgen","benoit2c@gmail.com","ALL")
+options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 
 
@@ -331,7 +331,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum  + pow(d,2)*diff + c + eps;
          ") -> evol_diff
 mif3 <- function(sigma,N_0,sigma_obs,z,d,c,e){
-  k = panelPomp::mif2(mf1,Nmif = 2500,shared = c(sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,c=c,e=e), specific = Model_diff@specific)
   
   return(k)
 }
@@ -386,10 +386,10 @@ Model_diff %>%
 param = coef(mf1)
 
 
-options =  list("firstgen","benoit2c@gmail.com","ALL")
+options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
-job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 
 
@@ -411,7 +411,7 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + a*gdp + c + eps;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c){
-  k = panelPomp::mif2(mf1,Nmif = 2500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c), specific = Model_diff@specific)
+  k = panelPomp::mif2(mf1,Nmif = 5000,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c), specific = Model_diff@specific)
   
   return(k)
 }
@@ -471,7 +471,7 @@ param = coef(mf1)
 #ggplot(data,aes(iteration,value)) + geom_line()+ facet_wrap(vars(key),scales = "free")
 
 
-options =  list("secondgen","benoit2c@gmail.com","ALL")
+options =  list("lastgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 
 job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
@@ -483,19 +483,20 @@ for(name in names){
   saveRDS(mifs_pomp[[name]],file1)
 }
 
+options =  list("secondgen","benoit2c@gmail.com","ALL")
+names(options) = c("partition","mail-user","mail-type")
 for(name in names[1:5]){
   mifs = mifs_pomp[[name]]
   d = data.frame(i = 1:length(mifs))
-  job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
+  job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
 }
 
 name = "gdp_only"
 mifs = mifs_pomp[[name]]
 d = data.frame(i = 1:length(mifs))
-job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 12,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
-options =  list("secondgen","benoit2c@gmail.com","ALL")
+options =  list("lastgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
-
+job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
 for(name in names){
   estimates = get_slurm_out(job2[[name]], outtype = "table",wait=TRUE)
   file2 = paste("estimates_",name,sep="")
