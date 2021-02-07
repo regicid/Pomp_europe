@@ -90,7 +90,7 @@ Model_diff %>%
   panelPomp::mif2(
     shared.start=unlist(guesses[6,]),
     specific.start = Model_diff@specific,
-    Np=5000,
+    Np=10000,
     Nmif=3,
     cooling.fraction.50=0.95,
     cooling.type="geometric",
@@ -158,7 +158,7 @@ Model_diff %>%
   panelPomp::mif2(
     shared.start=unlist(guesses[6,]),
     specific.start = Model_diff@specific,
-    Np=5000,
+    Np=10000,
     Nmif=3,
     cooling.fraction.50=0.95,
     cooling.type="geometric",
@@ -225,7 +225,7 @@ Model_diff %>%
   panelPomp::mif2(
     shared.start=unlist(guesses[6,]),
     specific.start = Model_diff@specific,
-    Np=5000,
+    Np=10000,
     Nmif=3,
     cooling.fraction.50=0.95,
     cooling.type="geometric",
@@ -292,7 +292,7 @@ Model_diff %>%
   panelPomp::mif2(
     shared.start=unlist(guesses[6,]),
     specific.start = Model_diff@specific,
-    Np=5000,
+    Np=10000,
     Nmif=3,
     cooling.fraction.50=0.95,
     cooling.type="geometric",
@@ -361,7 +361,7 @@ Model_diff %>%
   panelPomp::mif2(
     shared.start=unlist(guesses[6,]),
     specific.start = Model_diff@specific,
-    Np=5000,
+    Np=10000,
     Nmif=3,
     cooling.fraction.50=0.95,
     cooling.type="geometric",
@@ -441,8 +441,8 @@ Model_diff %>%
   panelPomp::mif2(
     shared.start=unlist(guesses[6,]),
     specific.start = Model_diff@specific,
-    Np=5000,
-    Nmif=100,
+    Np=10000,
+    Nmif=3,
     cooling.fraction.50=0.95,
     cooling.type="geometric",
     rw.sd= rwsd,
