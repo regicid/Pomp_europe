@@ -1,3 +1,4 @@
+library(tidyr)
 library(panelPomp)
 library(reshape)
 library(rslurm)
@@ -54,7 +55,7 @@ unused_parameters[[5]] = c(1,2,3,7)
 unused_parameters[[6]] = c(3,5,6,7)
 names(unused_parameters) = names
 
-submit_job <- function(unused_parameters,nmif=2,np=2,
+submit_job <- function(nmif=10000,np=10000,
                        cooling_fraction=.95,n=40){
   Pomps = list()
   for(country in Countries){
@@ -99,25 +100,26 @@ submit_job <- function(unused_parameters,nmif=2,np=2,
     return(k)
   }
   pkg = c("panelPomp")
-  job[[name]] = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = cores,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+  k = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = cores,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+  return(k)
 }
 
 for(name in names){
-  submit_job(unused_parameters = unused_parameters[[name]])
+  job[[name]] = submit_job()
 }
 
 for(name in names){
   mifs_pomp[[name]] = get_slurm_out(job[[name]],wait = TRUE)
-  file1 = paste("mifs_pomp_",name,sep="")
+  file1 = paste("mifs_pomp2_",name,sep="")
   file1 = paste(file1, ".RDS",sep="")
-  saveRDS(mifs_pomp2[[name]],file1)
+  saveRDS(mifs_pomp[[name]],file1)
 }
 
 
 for(name in names){
   mifs = mifs_pomp[[name]]
   d = data.frame(i = 1:length(mifs))
-  job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
+  job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = cores,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
 }
 
 for(name in names){
