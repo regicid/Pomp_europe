@@ -51,7 +51,7 @@ unused_parameters[[2]] = c(1,5,6,7)
 unused_parameters[[3]] = c(1,3,5,6)
 unused_parameters[[4]] = c(1,3,7)
 unused_parameters[[5]] = c(1,2,3,7)
-unused_parameters[[6]] = c(3,5,6,7)
+unused_parameters[[6]] = c(1,3,5,6,7)
 names(unused_parameters) = names
 
 submit_job <- function(nmif=7000,np=5000,
@@ -83,7 +83,7 @@ submit_job <- function(nmif=7000,np=5000,
   upper[unused_parameters[[name]]-1] = 0
   sobolDesign(lower = lower[PARAM[-1]], upper = upper[PARAM[-1]], nseq = n) -> guesses
   rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.1,sigma=.1,sigma_obs=.1,N_0 = ivp(.1))
-  rwsd@call[PARAM[unused_parameters[[name]]]] = 0
+  rwsd@call[PARAM[unused_parameters[[name]]][-1]] = 0
   Model_diff %>%
     panelPomp::mif2(
       shared.start=unlist(guesses[6,]),
