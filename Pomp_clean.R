@@ -98,7 +98,7 @@ submit_job <- function(nmif=7000,np=5000,
       pars = PARAM
     ) -> mf1
   mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f,sigma_obs2){
-    k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f,sigma_obs2), specific = Model_diff@specific)
+    k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f,sigma_obs2=sigma_obs2), specific = Model_diff@specific)
     return(k)
   }
   
