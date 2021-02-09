@@ -6,12 +6,12 @@ library(doParallel)
 library(dplyr)
 library(foreach)
 
-options =  list("dellgen","benoit2c@gmail.com","ALL")
+options =  list("firstgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
-cpus = c(12,12,16,16,40)
-names(cpus) = c("firstgen","fastgen","secondgen","lastgen","dellgen")
-cores = cpus[options[[1]]]
-
+pkg = c("panelPomp")
+cpus = c(12,12,16,16,40,48)
+names(cpus) = c("firstgen","fastgen","secondgen","lastgen","dellgen","gpu")
+#partitions = c(rep("dellgen",7),"gnt")
 ##Importations
 Countries<-c("Italy","France","Poland","Germany","United Kingdom","Iberia","Russia","Belgium","Netherlands","Scandinavia")
 Results = read.csv("Results.csv",row.names = 1)
@@ -27,11 +27,11 @@ Csnippet("
          N = N_0;
          ") -> rinit
 Csnippet("
-         double eps_obs = rnorm(1,pow(sigma_obs,2));
-         Nobs = N*eps_obs;
+         double eps_obs = rnorm(1,pow(sigma_obs,2)+pow(N*sigma_obs2,2));
+         Nobs = N + eps_obs;
          ") -> rmeas
 Csnippet("
-         lik = dnorm(Nobs,N,pow(N,2)*pow(sigma_obs,2),give_log);
+         lik = dnorm(Nobs,N,pow(sigma_obs,2)+pow(N*sigma_obs2,2),give_log);
          ") -> dmeas
 Csnippet("double eps = rnorm(0,pow(sigma,2));
          N = z*N + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps;
@@ -40,8 +40,8 @@ Csnippet("double eps = rnorm(0,pow(sigma,2));
 
 #mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
 
-names = c("all","just_b","just_f","no_int","just_diff","gdp_only")
-PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0")
+names = c("all","just_b","just_f","no_int","just_diff","gdp_only","expon")
+PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0","sigma_obs2")
 job = list()
 job2 = list()
 mifs_pomp = list()
@@ -52,10 +52,12 @@ unused_parameters[[3]] = c(1,3,5,6)
 unused_parameters[[4]] = c(1,3,7)
 unused_parameters[[5]] = c(1,2,3,7)
 unused_parameters[[6]] = c(1,3,5,6,7)
+unused_parameters[[7]] = c(1,2,3,5,6,7)
+
 names(unused_parameters) = names
 
 submit_job <- function(nmif=7000,np=5000,
-                       cooling_fraction=.95,n=40){
+                       cooling_fraction=.95,n=24){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
@@ -77,12 +79,12 @@ submit_job <- function(nmif=7000,np=5000,
   p = rep(0,length(PARAM[-1]))
   names(p) = PARAM[-1]
   Model_diff = panelPomp(Pomps,shared = p)
-  lower = c(a=.0,b=-.5,c=0,d=-.5,e=-.2,f=-.1,z=.6,sigma=.4,sigma_obs=.1,N_0 = -.1)
-  upper = c(a=.3,b=.5,c=.2,d=.5,e=.2,f=.1,z=1,sigma=.6,sigma_obs=.3,N_0 = .1)
+  lower = c(a=.0,b=-.5,c=0,d=-.5,e=-.2,f=-.1,z=.6,sigma=.4,sigma_obs=.1,N_0 = -.1,sigma_obs2=.1)
+  upper = c(a=.3,b=.5,c=.2,d=.5,e=.2,f=.1,z=1,sigma=.6,sigma_obs=.3,N_0 = .1,sigma_obs2=.3)
   lower[unused_parameters[[name]]-1] = 0
   upper[unused_parameters[[name]]-1] = 0
   sobolDesign(lower = lower[PARAM[-1]], upper = upper[PARAM[-1]], nseq = n) -> guesses
-  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.1,sigma=.1,sigma_obs=.1,N_0 = ivp(.1))
+  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.1,sigma=.1,sigma_obs=.1,N_0 = ivp(.1),sigma_obs2=.1)
   rwsd@call[PARAM[unused_parameters[[name]]][-1]] = 0
   Model_diff %>%
     panelPomp::mif2(
@@ -95,12 +97,12 @@ submit_job <- function(nmif=7000,np=5000,
       rw.sd= rwsd,
       pars = PARAM
     ) -> mf1
-  mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
-    k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f), specific = Model_diff@specific)
+  mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f,sigma_obs2){
+    k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f,sigma_obs2), specific = Model_diff@specific)
     return(k)
   }
-  pkg = c("panelPomp")
-  k = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = cores,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+  
+  k = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = cpus[options[[1]]],pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
   return(k)
 }
 
@@ -119,7 +121,7 @@ for(name in names){
 for(name in names){
   mifs = mifs_pomp[[name]]
   d = data.frame(i = 1:length(mifs))
-  job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = cores,pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
+  job2[[name]] = slurm_apply(f = eval,params = d,jobname = paste("evaluation",name,sep="_"),nodes = 15,cpus_per_node = cpus[options[[1]]],pkgs = pkg,slurm_options = options,add_objects = c("mifs"))
 }
 
 for(name in names){
