@@ -27,14 +27,15 @@ Csnippet("
          N = N_0;
          ") -> rinit
 Csnippet("
-         double eps_obs = rnorm(1,pow(sigma_obs,2)+pow(N*sigma_obs2,2));
-         Nobs = N + eps_obs;
+         double eps_obs = rnorm(0,pow(sigma_obs,2));
+         Nobs = N+eps_obs;
          ") -> rmeas
 Csnippet("
-         lik = dnorm(Nobs,N,pow(sigma_obs,2)+pow(N*sigma_obs2,2),give_log);
+         lik = dnorm(Nobs,N,pow(sigma_obs,2),give_log);
          ") -> dmeas
-Csnippet("double eps = rnorm(0,pow(sigma,2));
-         N = z*N + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps;
+Csnippet("double eps = rnorm(1,pow(sigma,2));
+         double eps2 = rnorm(0,pow(sigma_obs2,2));
+         N = z*N*eps + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps2;
          ") -> evol_diff
 
 
