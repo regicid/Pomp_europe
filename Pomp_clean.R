@@ -6,7 +6,7 @@ library(doParallel)
 library(dplyr)
 library(foreach)
 
-options =  list("firstgen","benoit2c@gmail.com","ALL")
+options =  list("dellgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 pkg = c("panelPomp")
 cpus = c(12,12,16,16,40,48)
@@ -34,7 +34,7 @@ Csnippet("
          lik = dnorm(Nobs,N,pow(sigma_obs,2),give_log);
          ") -> dmeas
 Csnippet("double eps = rnorm(1,pow(sigma,2));
-         double eps2 = rnorm(0,pow(sigma_obs2,2));
+         double eps2 = rnorm(0,pow(sigma2,2));
          N = z*N*eps + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps2;
          ") -> evol_diff
 
@@ -42,18 +42,18 @@ Csnippet("double eps = rnorm(1,pow(sigma,2));
 #mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
 
 names = c("all","just_b","just_f","no_int","just_diff","gdp_only","expon")
-PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0","sigma_obs2")
+PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0","sigma2")
 job = list()
 job2 = list()
 mifs_pomp = list()
 unused_parameters = list()
 unused_parameters[[1]] = c(1)
-unused_parameters[[2]] = c(1,5,6,7)
-unused_parameters[[3]] = c(1,3,5,6)
-unused_parameters[[4]] = c(1,3,7)
-unused_parameters[[5]] = c(1,2,3,7)
-unused_parameters[[6]] = c(1,3,5,6,7)
-unused_parameters[[7]] = c(1,2,3,5,6,7)
+unused_parameters[[2]] = c(1,5,6,7,9)
+unused_parameters[[3]] = c(1,3,5,6,9)
+unused_parameters[[4]] = c(1,3,7,9)
+unused_parameters[[5]] = c(1,2,3,7,9)
+unused_parameters[[6]] = c(1,3,5,6,7,9)
+unused_parameters[[7]] = c(1,2,3,5,6,7,9)
 
 names(unused_parameters) = names
 
@@ -80,12 +80,12 @@ submit_job <- function(nmif=7000,np=5000,
   p = rep(0,length(PARAM[-1]))
   names(p) = PARAM[-1]
   Model_diff = panelPomp(Pomps,shared = p)
-  lower = c(a=.0,b=-.5,c=0,d=-.5,e=-.2,f=-.1,z=.6,sigma=.4,sigma_obs=.1,N_0 = -.1,sigma_obs2=.1)
-  upper = c(a=.3,b=.5,c=.2,d=.5,e=.2,f=.1,z=1,sigma=.6,sigma_obs=.3,N_0 = .1,sigma_obs2=.3)
+  lower = c(a=.0,b=-.5,c=0,d=-.5,e=-.2,f=-.1,z=.6,sigma=.4,sigma_obs=.1,N_0 = -.1,sigma2=.1)
+  upper = c(a=.3,b=.5,c=.2,d=.5,e=.2,f=.1,z=1,sigma=.6,sigma_obs=.3,N_0 = .1,sigma2=.3)
   lower[unused_parameters[[name]]-1] = 0
   upper[unused_parameters[[name]]-1] = 0
   sobolDesign(lower = lower[PARAM[-1]], upper = upper[PARAM[-1]], nseq = n) -> guesses
-  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.1,sigma=.1,sigma_obs=.1,N_0 = ivp(.1),sigma_obs2=.1)
+  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.1,sigma=.1,sigma_obs=.1,N_0 = ivp(.1),sigma2=.1)
   rwsd@call[PARAM[unused_parameters[[name]]][-1]] = 0
   Model_diff %>%
     panelPomp::mif2(
@@ -98,8 +98,8 @@ submit_job <- function(nmif=7000,np=5000,
       rw.sd= rwsd,
       pars = PARAM
     ) -> mf1
-  mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f,sigma_obs2){
-    k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f,sigma_obs2=sigma_obs2), specific = Model_diff@specific)
+  mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f,sigma2){
+    k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f,sigma2=sigma2), specific = Model_diff@specific)
     return(k)
   }
   
@@ -113,7 +113,7 @@ for(name in names){
 
 for(name in names){
   mifs_pomp[[name]] = get_slurm_out(job[[name]],wait = TRUE)
-  file1 = paste("mifs_pomp2_",name,sep="")
+  file1 = paste("mifs_pomp4_",name,sep="")
   file1 = paste(file1, ".RDS",sep="")
   saveRDS(mifs_pomp[[name]],file1)
 }
@@ -127,7 +127,7 @@ for(name in names){
 
 for(name in names){
   estimates = get_slurm_out(job2[[name]], outtype = "table",wait=TRUE)
-  file2 = paste("estimates_",name,sep="")
+  file2 = paste("estimates4_",name,sep="")
   file2 = paste(file2, ".csv",sep="")
   write.csv(estimates,file2)
 }
