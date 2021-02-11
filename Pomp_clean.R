@@ -58,7 +58,7 @@ unused_parameters[[7]] = c(1,2,3,5,6,7,9)
 names(unused_parameters) = names
 
 submit_job <- function(nmif=7000,np=5000,
-                       cooling_fraction=.95,n=24){
+                       cooling_fraction=.95,n=36){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
@@ -103,7 +103,7 @@ submit_job <- function(nmif=7000,np=5000,
     return(k)
   }
   
-  k = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = cpus[options[[1]]],pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
+  k = slurm_apply(f = mif3,params = guesses,jobname = name,nodes = 15,cpus_per_node = cpus[options[[1]]],pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
   return(k)
 }
 
