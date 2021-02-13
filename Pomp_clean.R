@@ -5,7 +5,7 @@ library(rslurm)
 library(doParallel)
 library(dplyr)
 library(foreach)
-analysis = "sigmaVSsigma2"
+analysis = "sigmaVSsigma2_log"
 options =  list("dellgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 pkg = c("panelPomp")
@@ -15,7 +15,10 @@ names(cpus) = c("firstgen","fastgen","secondgen","lastgen","dellgen","gpu")
 ##Importations
 Countries<-c("Italy","France","Poland","Germany","United Kingdom","Iberia","Russia","Belgium","Netherlands","Scandinavia")
 Results = read.csv("Results.csv",row.names = 1)
+Results$Nobs = log(Results$Nobs+1)
+Results$Nobs = Results$Nobs/sd(Results$Nobs)
 Distances = read.csv("Distances.csv",row.names = 1)
+
 #Create the diffusion matrix
 R = Results[c("Countries","Date","Nobs")]
 R  = spread(R,"Countries","Nobs")
