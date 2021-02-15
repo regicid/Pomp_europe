@@ -5,7 +5,7 @@ library(rslurm)
 library(doParallel)
 library(dplyr)
 library(foreach)
-analysis = "sigmaVSsigma2_log"
+analysis = "sigmaVSsigma2_log2"
 options =  list("dellgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 pkg = c("panelPomp")
@@ -17,6 +17,7 @@ Countries<-c("Italy","France","Poland","Germany","United Kingdom","Iberia","Russ
 Results = read.csv("Results.csv",row.names = 1)
 Results$Nobs = log(Results$Nobs+1)
 Results$Nobs = Results$Nobs/sd(Results$Nobs)
+Results$gdp = Results$gdp - min(Results$gdp)
 Distances = read.csv("Distances.csv",row.names = 1)
 
 #Create the diffusion matrix
@@ -36,7 +37,7 @@ Csnippet("
 Csnippet("
          lik = dnorm(Nobs,N,pow(sigma_obs,2),give_log);
          ") -> dmeas
-Csnippet("double eps = rnorm(1,pow(sigma,2));
+Csnippet("double eps = fmax(rnorm(1,pow(sigma,2)),0);
          double eps2 = rnorm(0,pow(sigma2,2));
          N = z*N*eps + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps2;
          ") -> evol_diff
@@ -50,18 +51,18 @@ job = list()
 job2 = list()
 mifs_pomp = list()
 unused_parameters = list()
-unused_parameters[[1]] = c(1)
-unused_parameters[[2]] = c(1,5,6,7)
-unused_parameters[[3]] = c(1,3,5,6)
-unused_parameters[[4]] = c(1,3,7)
-unused_parameters[[5]] = c(1,2,3,7)
-unused_parameters[[6]] = c(1,3,5,6,7)
-unused_parameters[[7]] = c(1,2,3,5,6,7)
+unused_parameters[[1]] = c(1,12)
+unused_parameters[[2]] = c(1,5,6,7,12)
+unused_parameters[[3]] = c(1,3,5,6,12)
+unused_parameters[[4]] = c(1,3,7,12)
+unused_parameters[[5]] = c(1,2,3,7,12)
+unused_parameters[[6]] = c(1,3,5,6,7,12)
+unused_parameters[[7]] = c(1,2,3,5,6,7,12)
 
 names(unused_parameters) = names
 
 submit_job <- function(nmif=10000,np=10000,
-                       cooling_fraction=.95,n=36){
+                       cooling_fraction=.95,n=40){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
