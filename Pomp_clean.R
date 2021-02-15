@@ -5,7 +5,7 @@ library(rslurm)
 library(doParallel)
 library(dplyr)
 library(foreach)
-analysis = "sigmaVSsigma2_log2"
+analysis = "profile_a"
 options =  list("dellgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 pkg = c("panelPomp")
@@ -20,6 +20,22 @@ Results$Nobs = Results$Nobs/sd(Results$Nobs)
 Results$gdp = Results$gdp - min(Results$gdp)
 Distances = read.csv("Distances.csv",row.names = 1)
 
+estimates = read.csv("estimates__sigmaVSsigma2_log2gdp_only.csv")
+estimates %>%
+    filter(loglik>max(loglik)-3) %>%
+    select(a,z,sigma,d,b,e,f,sigma2,N_0,c,sigma_obs) %>%
+    apply(2,range) -> ranges
+
+profileDesign(
+    a=seq(
+        from=ranges[1,1]-.1,
+        to=ranges[2,1]+.1,
+        length=240
+    ),
+    lower=ranges[1,-1],
+    upper=ranges[2,-1],
+    nprof=50
+) -> guesses
 #Create the diffusion matrix
 R = Results[c("Countries","Date","Nobs")]
 R  = spread(R,"Countries","Nobs")
@@ -46,6 +62,7 @@ Csnippet("double eps = fmax(rnorm(1,pow(sigma,2)),0);
 #mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
 
 names = c("all","just_b","just_f","no_int","just_diff","gdp_only")
+names = c("gdp_only")
 PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0","sigma2")
 job = list()
 job2 = list()
@@ -61,8 +78,8 @@ unused_parameters[[7]] = c(1,2,3,5,6,7,12)
 
 names(unused_parameters) = names
 
-submit_job <- function(nmif=10000,np=10000,
-                       cooling_fraction=.95,n=40){
+submit_job <- function(nmif=7000,np=7000,
+                       cooling_fraction=.95,n=240){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
@@ -89,7 +106,7 @@ submit_job <- function(nmif=10000,np=10000,
   lower[unused_parameters[[name]]-1] = 0
   upper[unused_parameters[[name]]-1] = 0
   sobolDesign(lower = lower[PARAM[-1]], upper = upper[PARAM[-1]], nseq = n) -> guesses
-  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.1,sigma=.1,sigma_obs=.1,N_0 = ivp(.1),sigma2=.1)
+  rwsd = rw.sd(a=.0,b=.1,c=.1,d=.1,e=.1,f=.1,z=.15,sigma=.1,sigma_obs=.1,N_0 = ivp(.1),sigma2=.1)
   rwsd@call[PARAM[unused_parameters[[name]]][-1]] = 0
   Model_diff %>%
     panelPomp::mif2(
@@ -117,7 +134,7 @@ for(name in names){
 
 for(name in names){
   mifs_pomp[[name]] = get_slurm_out(job[[name]],wait = TRUE)
-  cleanup_files(job[[name]])
+  #cleanup_files(job[[name]])
   file1 = paste(paste("mifs_pomp_",analysis,sep="_"),name,sep="")
   file1 = paste(file1, ".RDS",sep="")
   saveRDS(mifs_pomp[[name]],file1)
