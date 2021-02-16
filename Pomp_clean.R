@@ -62,7 +62,6 @@ Csnippet("double eps = fmax(rnorm(1,pow(sigma,2)),0);
 #mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
 
 names = c("all","just_b","just_f","no_int","just_diff","gdp_only")
-names = c("gdp_only")
 PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0","sigma2")
 job = list()
 job2 = list()
@@ -77,7 +76,7 @@ unused_parameters[[6]] = c(1,3,5,6,7,12)
 unused_parameters[[7]] = c(1,2,3,5,6,7,12)
 
 names(unused_parameters) = names
-
+names = c("gdp_only")
 submit_job <- function(nmif=7000,np=7000,
                        cooling_fraction=.95,n=240){
   Pomps = list()
