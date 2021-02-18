@@ -5,7 +5,7 @@ library(rslurm)
 library(doParallel)
 library(dplyr)
 library(foreach)
-analysis = "sigmaVSsigma2_log2"
+analysis = "MLE"
 options =  list("dellgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 pkg = c("panelPomp")
@@ -60,9 +60,9 @@ unused_parameters[[6]] = c(1,3,5,6,7,12)
 unused_parameters[[7]] = c(1,2,3,5,6,7,12)
 
 names(unused_parameters) = names
-
-submit_job <- function(nmif=10000,np=10000,
-                       cooling_fraction=.95,n=40){
+names = "gdp_only"
+submit_job <- function(nmif=10000,np=20000,
+                       cooling_fraction=.95,n=80){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
@@ -89,7 +89,7 @@ submit_job <- function(nmif=10000,np=10000,
   lower[unused_parameters[[name]]-1] = 0
   upper[unused_parameters[[name]]-1] = 0
   sobolDesign(lower = lower[PARAM[-1]], upper = upper[PARAM[-1]], nseq = n) -> guesses
-  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.1,sigma=.1,sigma_obs=.1,N_0 = ivp(.1),sigma2=.1)
+  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.2,sigma=.1,sigma_obs=.1,N_0 = ivp(.1),sigma2=.1)
   rwsd@call[PARAM[unused_parameters[[name]]][-1]] = 0
   Model_diff %>%
     panelPomp::mif2(
