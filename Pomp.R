@@ -61,7 +61,7 @@ unused_parameters[[7]] = c(1,2,3,5,6,7,12)
 
 names(unused_parameters) = names
 names = "gdp_only"
-submit_job <- function(nmif=10000,np=20000,
+submit_job <- function(nmif=10000,np=15000,
                        cooling_fraction=.95,n=80){
   Pomps = list()
   for(country in Countries){
@@ -117,7 +117,7 @@ for(name in names){
 
 for(name in names){
   mifs_pomp[[name]] = get_slurm_out(job[[name]],wait = TRUE)
-  cleanup_files(job[[name]])
+  #cleanup_files(job[[name]])
   file1 = paste(paste("mifs_pomp_",analysis,sep="_"),name,sep="")
   file1 = paste(file1, ".RDS",sep="")
   saveRDS(mifs_pomp[[name]],file1)
@@ -132,7 +132,7 @@ for(name in names){
 
 for(name in names){
   estimates = get_slurm_out(job2[[name]], outtype = "table",wait=TRUE)
-  cleanup_files(job2[[name]])
+  #cleanup_files(job2[[name]])
   file2 = paste(paste("estimates_",analysis,sep="_"),name,sep="")
   file2 = paste(file2, ".csv",sep="")
   write.csv(estimates,file2)
