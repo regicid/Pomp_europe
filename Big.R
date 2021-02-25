@@ -82,7 +82,6 @@ names(p) = PARAM
 Model_diff = panelPomp(Pomps,shared = p)
 lower = c(a = 0.2,sigma=0.5,N_0 = 0,sigma_obs=0.2,z = 1.1,d = -0.6,b = -0.5,c =-1,e=-0.3,f=-0.3)
 upper = c(a = 0.6,sigma=1, N_0 = 0,sigma_obs=0.6,z = 1.3,d = 1,b = 0.5,c = 0,e=-0.3,f=-0.3)
-
 sobolDesign(lower = lower[PARAM], upper = upper[PARAM], nseq = 48) -> guesses
 
 
@@ -102,7 +101,6 @@ param = coef(mf1)
 pkg = c("panelPomp")
 options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
-
 job[[name]] = slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",sep="_"),nodes = 15,cpus_per_node = 16,pkgs = pkg,slurm_options = options,add_objects = c("mf1","Model_diff"))
 
 
@@ -392,8 +390,8 @@ job[[name]] =  slurm_apply(f = mif3,params = guesses,jobname = paste(name,"0",se
 name = "gdp_only"
 PARAM = c("a","c","z","sigma","sigma_obs","N_0")
 rwsd = rw.sd(a=.2,z = .2,sigma=.1,sigma_obs = .1,N_0=ivp(.1),c=.1)
-Csnippet("double eps = rnorm(0,pow(sigma,2));
-         N = z*N + a*gdp + c + eps;
+Csnippet("double eps = rnorm(1,pow(sigma,2));
+         N = z*N*eps + a*gdp + c;
          ") -> evol_diff
 mif3 <- function(a,sigma,N_0,sigma_obs,z,c){
   k = panelPomp::mif2(mf1,Nmif = 7500,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,c=c), specific = Model_diff@specific)
@@ -487,4 +485,15 @@ for(name in names){
   file2 = paste("estimates_",name,sep="")
   file2 = paste(file2, ".csv",sep="")
   write.csv(estimates,file2)
+}
+a = data.frame(matrix(nrow=0,ncol=13))
+names(a) = names(b[[1]])
+for(i in 1:6){
+  file = paste("_rslurm_ev_gdp_only_profile_a/results_",as.character(i-1),sep="")
+  b = readRDS(paste(file,".RDS",sep=""))
+  for(j in 1:40){
+    a[nrow(a)+1,] = NA
+    a[nrow(a),] = b[[j]]
+  }
+    
 }
