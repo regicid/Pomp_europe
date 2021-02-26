@@ -63,8 +63,8 @@ unused_parameters[[9]] = c(1,2,3,5,6,7,8,12)
 
 names(unused_parameters) = names
 names = names[-3][-3]
-submit_job <- function(nmif=10000,np=20000,
-                       cooling_fraction=.95,n=40){
+submit_job <- function(nmif=10000,np=15000,
+                       cooling_fraction=.95,n=80){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
