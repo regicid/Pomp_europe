@@ -17,7 +17,7 @@ Countries<-c("Italy","France","Poland","Germany","United Kingdom","Iberia","Russ
 Results = read.csv("Results.csv",row.names = 1)
 Results$Nobs = log(Results$Nobs+1)
 Results$Nobs = Results$Nobs/sd(Results$Nobs)
-Results$gdp = Results$gdp - min(Results$gdp)
+# Results$gdp = Results$gdp - min(Results$gdp)
 Distances = read.csv("Distances.csv",row.names = 1)
 
 #Create the diffusion matrix
@@ -43,9 +43,8 @@ Csnippet("double eps = fmax(rnorm(1,pow(sigma,2)),0);
          ") -> evol_diff
 
 
-#mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f){
 
-names = c("all","just_b","just_f","no_int","just_diff","gdp_only")
+names = c("all","just_b","just_f","no_int","just_diff","gdp_only","expon","linear","constant")
 PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0","sigma2")
 job = list()
 job2 = list()
@@ -58,11 +57,14 @@ unused_parameters[[4]] = c(1,3,7,12)
 unused_parameters[[5]] = c(1,2,3,7,12)
 unused_parameters[[6]] = c(1,3,5,6,7,12)
 unused_parameters[[7]] = c(1,2,3,5,6,7,12)
+unused_parameters[[8]] = c(1,3,5,6,7,8,12)
+unused_parameters[[9]] = c(1,2,3,5,6,7,8,12)
+
 
 names(unused_parameters) = names
-names = "gdp_only"
-submit_job <- function(nmif=10000,np=15000,
-                       cooling_fraction=.95,n=80){
+names = names[-3][-3]
+submit_job <- function(nmif=10000,np=20000,
+                       cooling_fraction=.95,n=40){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
