@@ -62,9 +62,9 @@ unused_parameters[[9]] = c(1,2,3,5,6,7,8,12)
 
 
 names(unused_parameters) = names
-names = names[-3][-3]
+names = c("all","just_b",'just_f',"gdp_only")
 submit_job <- function(nmif=10000,np=15000,
-                       cooling_fraction=.95,n=40){
+                       cooling_fraction=.95,n=80){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
@@ -86,12 +86,12 @@ submit_job <- function(nmif=10000,np=15000,
   p = rep(0,length(PARAM[-1]))
   names(p) = PARAM[-1]
   Model_diff = panelPomp(Pomps,shared = p)
-  lower = c(a=.0,b=-.5,c=0,d=-.5,e=-.2,f=-.1,z=.6,sigma=.4,sigma_obs=.1,N_0 = -.1,sigma2=.1)
-  upper = c(a=.3,b=.5,c=.2,d=.5,e=.2,f=.1,z=1,sigma=.6,sigma_obs=.3,N_0 = .1,sigma2=.3)
+  lower = c(a=.05,b=-.5,c=0,d=-.5,e=-.2,f=-.1,z=1,sigma=.8,sigma_obs=.07,N_0 = -.1,sigma2=.1)
+  upper = c(a=.1,b=.5,c=0,d=.5,e=.2,f=.1,z=1.3,sigma=1.1,sigma_obs=.15,N_0 = .1,sigma2=.3)
   lower[unused_parameters[[name]]-1] = 0
   upper[unused_parameters[[name]]-1] = 0
   sobolDesign(lower = lower[PARAM[-1]], upper = upper[PARAM[-1]], nseq = n) -> guesses
-  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.2,sigma=.1,sigma_obs=.1,N_0 = ivp(.1),sigma2=.1)
+  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.2,sigma=.15,sigma_obs=.15,N_0 = ivp(.1),sigma2=.1)
   rwsd@call[PARAM[unused_parameters[[name]]][-1]] = 0
   Model_diff %>%
     panelPomp::mif2(
