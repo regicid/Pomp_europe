@@ -39,7 +39,7 @@ Csnippet("
          ") -> dmeas
 Csnippet("double eps = fmax(rnorm(1,pow(sigma,2)),0);
          double eps2 = rnorm(0,pow(sigma2,2));
-         N = z*N*eps + pow(e,2)*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps2;
+         N = z*N*eps + e*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps2;
          ") -> evol_diff
 
 
@@ -60,9 +60,16 @@ unused_parameters[[7]] = c(1,2,3,5,6,7,12)
 unused_parameters[[8]] = c(1,3,5,6,7,8,12)
 unused_parameters[[9]] = c(1,2,3,5,6,7,8,12)
 
-
-names(unused_parameters) = names
 names = c("all","just_b",'just_f',"gdp_only")
+
+mifs_pomp = list()
+unused_parameters = list()
+unused_parameters[[1]] = c(1,2,3,5,6,7,8,12)
+unused_parameters[[2]] = c(1,2,3,5,6,7,12)
+unused_parameters[[3]] = c(1,3,5,6,7,12)
+unused_parameters[[4]] = c(1,2,3,5,7,12)
+names(unused_parameters) = names
+
 submit_job <- function(nmif=10000,np=15000,
                        cooling_fraction=.95,n=80){
   Pomps = list()
