@@ -5,7 +5,7 @@ library(rslurm)
 library(doParallel)
 library(dplyr)
 library(foreach)
-analysis = "MLE2"
+analysis = "MLE3"
 options =  list("dellgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 pkg = c("panelPomp")
