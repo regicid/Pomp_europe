@@ -6,7 +6,7 @@ library(doParallel)
 library(dplyr)
 library(foreach)
 analysis = "MLE3"
-options =  list("dellgen","benoit2c@gmail.com","ALL")
+options =  list("secondgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 pkg = c("panelPomp")
 cpus = c(12,12,16,16,40,48)
@@ -61,7 +61,7 @@ unused_parameters[[8]] = c(1,3,5,6,7,8,12)
 unused_parameters[[9]] = c(1,2,3,5,6,7,8,12)
 
 names = c("all","just_b",'just_f',"gdp_only")
-
+names = c("A","B","C","D")
 mifs_pomp = list()
 unused_parameters = list()
 unused_parameters[[1]] = c(1,2,3,5,6,7,8,12)
@@ -71,7 +71,7 @@ unused_parameters[[4]] = c(1,2,3,5,7,12)
 names(unused_parameters) = names
 
 submit_job <- function(nmif=10000,np=15000,
-                       cooling_fraction=.95,n=80){
+                       cooling_fraction=.95,n=48){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
