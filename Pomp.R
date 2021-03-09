@@ -5,8 +5,8 @@ library(rslurm)
 library(doParallel)
 library(dplyr)
 library(foreach)
-analysis = "MLE3"
-options =  list("secondgen","benoit2c@gmail.com","ALL")
+analysis = "MLE_with_sigma2"
+options =  list("dellgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
 pkg = c("panelPomp")
 cpus = c(12,12,16,16,40,48)
@@ -51,36 +51,36 @@ job2 = list()
 mifs_pomp = list()
 unused_parameters = list()
 unused_parameters[[1]] = c(1,12)
-unused_parameters[[2]] = c(1,5,6,7,12)
-unused_parameters[[3]] = c(1,3,5,6,12)
-unused_parameters[[4]] = c(1,3,7,12)
-unused_parameters[[5]] = c(1,2,3,7,12)
-unused_parameters[[6]] = c(1,3,5,6,7,12)
-unused_parameters[[7]] = c(1,2,3,5,6,7,12)
-unused_parameters[[8]] = c(1,3,5,6,7,8,12)
-unused_parameters[[9]] = c(1,2,3,5,6,7,8,12)
+unused_parameters[[2]] = c(1,5,6,7)
+unused_parameters[[3]] = c(1,3,5,6)
+unused_parameters[[4]] = c(1,3,7)
+unused_parameters[[5]] = c(1,2,3,7)
+unused_parameters[[6]] = c(1,3,5,6,7)
+unused_parameters[[7]] = c(1,2,3,5,6,7)
+unused_parameters[[8]] = c(1,3,5,6,7,8)
+unused_parameters[[9]] = c(1,2,3,5,6,7,8)
 
 names = c("all","just_b",'just_f',"gdp_only","gdp_with_int_cum","just_diff","just_b","b_a","d_a")
 names = c("A","B","C","D",'E','F','G','H','I')
 mifs_pomp = list()
 unused_parameters = list()
-unused_parameters[[1]] = c(1,2,3,5,6,7,8,12)
-unused_parameters[[2]] = c(1,2,3,5,6,7,12)
-unused_parameters[[3]] = c(1,3,5,6,7,12)
-unused_parameters[[4]] = c(1,2,3,5,7,12)
-unused_parameters[[5]] = c(1,3,5,6,12)
-unused_parameters[[6]] = c(1,2,3,6,7,12)
-unused_parameters[[7]] = c(1,3,6,7,12)
-unused_parameters[[8]] = c(1,2,5,6,7,12)
-unused_parameters[[9]] = c(1,5,6,7,12)
+unused_parameters[[1]] = c(1,2,3,5,6,7,8)
+unused_parameters[[2]] = c(1,2,3,5,6,7)
+unused_parameters[[3]] = c(1,3,5,6,7)
+unused_parameters[[4]] = c(1,2,3,5,7)
+unused_parameters[[5]] = c(1,3,5,6)
+unused_parameters[[6]] = c(1,2,3,6,7)
+unused_parameters[[7]] = c(1,3,6,7)
+unused_parameters[[8]] = c(1,2,5,6,7)
+unused_parameters[[9]] = c(1,5,6,7)
 
 
 
 names(unused_parameters) = names
-names = names[-(1:4)]
+names = names[(1:4)]
 
 submit_job <- function(nmif=10000,np=15000,
-                       cooling_fraction=.95,n=48){
+                       cooling_fraction=.95,n=40){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
