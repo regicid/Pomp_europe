@@ -81,7 +81,7 @@ submit_job <- function(nmif=10000,np=20000,
     }
     z = which(!is.na(data$gdp))
     Gdp = data[,c("Date","gdp")]
-    Gdp$diff = rowSums(R/untable(Distances[country,],12)**2)
+    Gdp$diff = rowSums(R/untable(Distances[country,],12)**2)[as.character(data$Date)]
     data = data[c("Date","Nobs")]
     Gdp$cum = vector("numeric",length = nrow(Gdp))
     Gdp$cum[2:nrow(Gdp)] = cumsum(data$Nobs)[1:nrow(Gdp)-1]
