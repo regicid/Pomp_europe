@@ -74,6 +74,11 @@ submit_job <- function(nmif=10000,np=20000,
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
+    t0=1300
+    if(country=="Russia"){
+      data = dplyr::filter(data,Date>=1500)
+      t0=1500
+    }
     z = which(!is.na(data$gdp))
     Gdp = data[,c("Date","gdp")]
     Gdp$diff = rowSums(R/untable(Distances[country,],12)**2)
@@ -81,8 +86,7 @@ submit_job <- function(nmif=10000,np=20000,
     Gdp$cum = vector("numeric",length = nrow(Gdp))
     Gdp$cum[2:nrow(Gdp)] = cumsum(data$Nobs)[1:nrow(Gdp)-1]
     Gdp$cum_diff = cumsum(Gdp$diff)
-    t0=1300
-    if(country=="Russia"){t0=1500}
+    
     data %>%
       pomp(
         times="Date", t0=t0,rinit=rinit,
