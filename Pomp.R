@@ -39,48 +39,38 @@ Csnippet("
          ") -> dmeas
 Csnippet("double eps = fmax(rnorm(1,pow(sigma,2)),0);
          double eps2 = rnorm(0,pow(sigma2,2));
-         N = z*N*eps + e*cum + pow(f,2)*gdp*cum + a*gdp  + pow(d,2)*diff + pow(b,2)*gdp*diff + c + eps2;
+         N = z*N*eps + e*cum + f*gdp*cum + a*gdp  + d*diff + b*gdp*diff +g*cum_diff + c + eps2;
          ") -> evol_diff
 
 
 
-names = c("all","just_b","just_f","no_int","just_diff","gdp_only","expon","linear","constant")
-PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0","sigma2")
+PARAM = c("bla","a","b","c","d","e","f","z","sigma","sigma_obs","N_0","sigma2","g")
 job = list()
 job2 = list()
 mifs_pomp = list()
 unused_parameters = list()
-unused_parameters[[1]] = c(1,12)
-unused_parameters[[2]] = c(1,5,6,7)
-unused_parameters[[3]] = c(1,3,5,6)
-unused_parameters[[4]] = c(1,3,7)
-unused_parameters[[5]] = c(1,2,3,7)
-unused_parameters[[6]] = c(1,3,5,6,7)
-unused_parameters[[7]] = c(1,2,3,5,6,7)
-unused_parameters[[8]] = c(1,3,5,6,7,8)
-unused_parameters[[9]] = c(1,2,3,5,6,7,8)
-
-names = c("all","just_b",'just_f',"gdp_only","gdp_with_int_cum","just_diff","just_b","b_a","d_a")
-names = c("A","B","C","D",'E','F','G','H','I')
+names = c("A","B","C","D",'E','F','G','H','I','J','K')
 mifs_pomp = list()
 unused_parameters = list()
-unused_parameters[[1]] = c(1,2,3,5,6,7,8)
-unused_parameters[[2]] = c(1,2,3,5,6,7)
-unused_parameters[[3]] = c(1,3,5,6,7)
-unused_parameters[[4]] = c(1,2,3,5,7)
-unused_parameters[[5]] = c(1,3,5,6)
-unused_parameters[[6]] = c(1,2,3,6,7)
-unused_parameters[[7]] = c(1,3,6,7)
-unused_parameters[[8]] = c(1,2,5,6,7)
-unused_parameters[[9]] = c(1,5,6,7)
+unused_parameters[[1]] = c(1,2,3,5,6,7,8,13)
+unused_parameters[[2]] = c(1,2,3,5,6,7,13)
+unused_parameters[[3]] = c(1,3,5,6,7,13)
+unused_parameters[[4]] = c(1,2,3,5,7,13)
+unused_parameters[[5]] = c(1,3,5,6,13)
+unused_parameters[[6]] = c(1,2,3,6,7,13)
+unused_parameters[[7]] = c(1,3,6,7,13)
+unused_parameters[[8]] = c(1,2,5,6,7,13)
+unused_parameters[[9]] = c(1,5,6,7,13)
+unused_parameters[[10]] = c(1,2,3,5,6,7)
+unused_parameters[[11]] = c(1)
 
 
 
 names(unused_parameters) = names
-names = names[(1:4)]
 
-submit_job <- function(nmif=10000,np=15000,
-                       cooling_fraction=.95,n=40){
+
+submit_job <- function(nmif=10000,np=20000,
+                       cooling_fraction=.95,n=200){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
@@ -90,14 +80,17 @@ submit_job <- function(nmif=10000,np=15000,
     data = data[c("Date","Nobs")]
     Gdp$cum = vector("numeric",length = nrow(Gdp))
     Gdp$cum[2:nrow(Gdp)] = cumsum(data$Nobs)[1:nrow(Gdp)-1]
+    Gdp$cum_diff = cumsum(Gdp$diff)
+    t0=1300
+    if(country=="Russia"){t0=1500}
     data %>%
       pomp(
-        times="Date", t0=1300,rinit=rinit,
+        times="Date", t0=t0,rinit=rinit,
         covar = covariate_table(Gdp, times= "Date"),
         rprocess=discrete_time(evol_diff,delta.t = 50),
         dmeasure = dmeas,obsnames = c("Nobs"),
         statenames=c("N"),rmeasure=rmeas,
-        paramnames=PARAM[-1],covarnames = c("gdp","diff","cum")
+        paramnames=PARAM[-1],covarnames = c("gdp","diff","cum","diff_cum")
       ) -> Pomps[[country]]}
   p = rep(0,length(PARAM[-1]))
   names(p) = PARAM[-1]
@@ -107,7 +100,7 @@ submit_job <- function(nmif=10000,np=15000,
   lower[unused_parameters[[name]]-1] = 0
   upper[unused_parameters[[name]]-1] = 0
   sobolDesign(lower = lower[PARAM[-1]], upper = upper[PARAM[-1]], nseq = n) -> guesses
-  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.2,sigma=.15,sigma_obs=.15,N_0 = ivp(.1),sigma2=.1)
+  rwsd = rw.sd(a=.1,b=.1,c=.1,d=.1,e=.1,f=.1,z=.2,sigma=.15,sigma_obs=.15,N_0 = ivp(.1),sigma2=.1,g=.1)
   rwsd@call[PARAM[unused_parameters[[name]]][-1]] = 0
   Model_diff %>%
     panelPomp::mif2(
