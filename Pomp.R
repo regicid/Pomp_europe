@@ -90,7 +90,7 @@ submit_job <- function(nmif=10000,np=20000,
         rprocess=discrete_time(evol_diff,delta.t = 50),
         dmeasure = dmeas,obsnames = c("Nobs"),
         statenames=c("N"),rmeasure=rmeas,
-        paramnames=PARAM[-1],covarnames = c("gdp","diff","cum","diff_cum")
+        paramnames=PARAM[-1],covarnames = c("gdp","diff","cum","cum_diff")
       ) -> Pomps[[country]]}
   p = rep(0,length(PARAM[-1]))
   names(p) = PARAM[-1]
