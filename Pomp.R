@@ -99,8 +99,8 @@ submit_job <- function(nmif=10000,np=20000,
   p = rep(0,length(PARAM[-1]))
   names(p) = PARAM[-1]
   Model_diff = panelPomp(Pomps,shared = p)
-  lower = c(a=.05,b=-.5,c=0,d=-.5,e=-.2,f=-.1,z=1,sigma=.8,sigma_obs=.07,N_0 = -.1,sigma2=.1)
-  upper = c(a=.1,b=.5,c=0,d=.5,e=.2,f=.1,z=1.3,sigma=1.1,sigma_obs=.15,N_0 = .1,sigma2=.3)
+  lower = c(a=.05,b=-.5,c=0,d=-.5,e=-.2,f=-.1,z=1,sigma=.8,sigma_obs=.07,N_0 = -.1,sigma2=.1,g=-.1)
+  upper = c(a=.1,b=.5,c=0,d=.5,e=.2,f=.1,z=1.3,sigma=1.1,sigma_obs=.15,N_0 = .1,sigma2=.3,g=-.1)
   lower[unused_parameters[[name]]-1] = 0
   upper[unused_parameters[[name]]-1] = 0
   sobolDesign(lower = lower[PARAM[-1]], upper = upper[PARAM[-1]], nseq = n) -> guesses
