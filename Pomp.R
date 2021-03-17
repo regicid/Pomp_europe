@@ -117,7 +117,7 @@ submit_job <- function(nmif=10000,np=20000,
       rw.sd= rwsd,
       pars = PARAM
     ) -> mf1
-  mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f,sigma2){
+  mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f,sigma2,g){
     k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f,sigma2=sigma2), specific = Model_diff@specific)
     return(k)
   }
