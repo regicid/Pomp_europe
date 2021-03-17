@@ -39,7 +39,7 @@ Csnippet("
          ") -> dmeas
 Csnippet("double eps = fmax(rnorm(1,pow(sigma,2)),0);
          double eps2 = rnorm(0,pow(sigma2,2));
-         N = z*N*eps + e*cum + f*gdp*cum + a*gdp  + d*diff + b*gdp*diff +g*cum_diff + c + eps2;
+         N = z*N*eps + e*cum + f*gdp*cum + a*gdp  + d*diff + b*gdp*diff + g*cum_diff + c + eps2;
          ") -> evol_diff
 
 
@@ -63,14 +63,11 @@ unused_parameters[[8]] = c(1,2,5,6,7,13)
 unused_parameters[[9]] = c(1,5,6,7,13)
 unused_parameters[[10]] = c(1,2,3,5,6,7)
 unused_parameters[[11]] = c(1)
-
-
-
 names(unused_parameters) = names
 
 
-submit_job <- function(nmif=10000,np=20000,
-                       cooling_fraction=.95,n=200){
+submit_job <- function(nmif=2,np=2,
+                       cooling_fraction=.95,n=1){
   Pomps = list()
   for(country in Countries){
     data = dplyr::filter(Results,Countries==country)
@@ -118,7 +115,7 @@ submit_job <- function(nmif=10000,np=20000,
       pars = PARAM
     ) -> mf1
   mif3 <- function(a,sigma,N_0,sigma_obs,z,d,c,b,e,f,sigma2,g){
-    k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f,sigma2=sigma2), specific = Model_diff@specific)
+    k = panelPomp::mif2(mf1,Nmif = nmif,shared = c(a = a,sigma = sigma,N_0 = N_0,sigma_obs = sigma_obs,z = z,d = d,b=b,c=c,e=e,f=f,sigma2=sigma2,g=g), specific = Model_diff@specific)
     return(k)
   }
   
