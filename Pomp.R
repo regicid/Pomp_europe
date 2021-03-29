@@ -8,7 +8,7 @@ library(foreach)
 analysis = "MLE_with_sigma2"
 options =  list("dellgen","benoit2c@gmail.com","ALL")
 names(options) = c("partition","mail-user","mail-type")
-pkg = c("panelPomp")
+pkg = c("panelPomp")z
 cpus = c(12,12,16,16,40,48)
 names(cpus) = c("firstgen","fastgen","secondgen","lastgen","dellgen","gpu")
 #partitions = c(rep("dellgen",7),"gnt")
